@@ -349,6 +349,7 @@ function activateBrowser(
     });
 
     let navigateToCurrentDirectory: boolean = false;
+    let sortDirectoriesFirst: boolean = true;
 
     void settingRegistry
       .load('@jupyterlab/filebrowser-extension:browser')
@@ -362,6 +363,15 @@ function activateBrowser(
         navigateToCurrentDirectory = settings.get('navigateToCurrentDirectory')
           .composite as boolean;
         browser.navigateToCurrentDirectory = navigateToCurrentDirectory;
+
+        settings.changed.connect(settings => {
+          sortDirectoriesFirst = settings.get('sortDirectoriesFirst')
+            .composite as boolean;
+          browser.sortDirectoriesFirst = sortDirectoriesFirst;
+        });
+        sortDirectoriesFirst = settings.get('sortDirectoriesFirst')
+          .composite as boolean;
+        browser.sortDirectoriesFirst = sortDirectoriesFirst;
       });
 
     // Whether to automatically navigate to a document's current directory

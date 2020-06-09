@@ -281,11 +281,23 @@ export class FileBrowser extends Widget {
     this._navigateToCurrentDirectory = value;
   }
 
+  /**
+   * Whether to show directories first in file browser
+   */
+  get sortDirectoriesFirst(): boolean {
+    return this._sortDirectoriesFirst;
+  }
+
+  set sortDirectoriesFirst(value: boolean) {
+    this._sortDirectoriesFirst = value;
+  }
+
   private _crumbs: BreadCrumbs;
   private _listing: DirListing;
   private _manager: IDocumentManager;
   private _directoryPending: boolean;
   private _navigateToCurrentDirectory: boolean;
+  private _sortDirectoriesFirst: boolean;
 }
 
 /**

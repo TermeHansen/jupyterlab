@@ -21,6 +21,12 @@
       "title": "Navigate to current directory",
       "description": "Whether to automatically navigate to a document's current directory",
       "default": false
+    },
+    "sortDirectoriesFirst": {
+      "type": "boolean",
+      "title": "Sort the directories to the top",
+      "description": "Whether to sort for directories as a group before or after files",
+      "default": true
     }
   },
   "additionalProperties": false,

@@ -1530,7 +1530,8 @@ export class DirListing extends Widget {
   private _sortedItems: Contents.IModel[] = [];
   private _sortState: DirListing.ISortState = {
     direction: 'ascending',
-    key: 'name'
+    key: 'name',
+    dirsfirst: 'true'
   };
   private _onItemOpened = new Signal<DirListing, Contents.IModel>(this);
   private _drag: Drag | null = null;
@@ -1587,6 +1588,7 @@ export namespace DirListing {
      * The sort key.
      */
     key: 'name' | 'last_modified';
+    dirsfirst: 'true' | 'false;';
   }
 
   /**
@@ -1737,7 +1739,11 @@ export namespace DirListing {
     handleHeaderClick(node: HTMLElement, event: MouseEvent): ISortState {
       let name = DOMUtils.findElement(node, NAME_ID_CLASS);
       let modified = DOMUtils.findElement(node, MODIFIED_ID_CLASS);
-      let state: ISortState = { direction: 'ascending', key: 'name' };
+      let state: ISortState = {
+        direction: 'ascending',
+        key: 'name',
+        dirsfirst: 'true'
+      };
       let target = event.target as HTMLElement;
       if (name.contains(target)) {
         const modifiedIcon = DOMUtils.findElement(
@@ -2028,12 +2034,13 @@ namespace Private {
   ): Contents.IModel[] {
     let copy = toArray(items);
     let reverse = state.direction === 'descending' ? 1 : -1;
+    let reversedirs = state.dirsfirst === 'true' ? 1 : -1;
 
     if (state.key === 'last_modified') {
       // Sort by last modified (grouping directories first)
       copy.sort((a, b) => {
-        let t1 = a.type === 'directory' ? 0 : 1;
-        let t2 = b.type === 'directory' ? 0 : 1;
+        let t1 = a.type === 'directory' ? 1 : 2;
+        let t2 = b.type === 'directory' ? 1 : 2;
 
         let valA = new Date(a.last_modified).getTime();
         let valB = new Date(b.last_modified).getTime();
@@ -2043,10 +2050,12 @@ namespace Private {
     } else {
       // Sort by name (grouping directories first)
       copy.sort((a, b) => {
-        let t1 = a.type === 'directory' ? 0 : 1;
-        let t2 = b.type === 'directory' ? 0 : 1;
+        let t1 = a.type === 'directory' ? 1 : 2;
+        let t2 = b.type === 'directory' ? 1 : 2;
 
-        return t1 - t2 || b.name.localeCompare(a.name) * reverse;
+        return (
+          (t1 - t2) * reversedirs || b.name.localeCompare(a.name) * reverse
+        );
       });
     }
     return copy;
